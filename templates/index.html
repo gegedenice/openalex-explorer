@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename= 'js/config.js')}}"></script>
+  <script src="{{ url_for('static', filename= 'dist/papaparse.min.js')}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css')}}">
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename= 'dist/keshif.min.css')}}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="d-flex justify-content-between align-items-center p-3 px-md-4 mb-3 bg-light border-bottom shadow-sm">
+    <!-- Left side: Logo and Title -->
+    <div class="d-flex align-items-center">
+      <h5 class="my-0">
+        <a href="/"
+           title="Retour à la liste des visualisations" 
+           data-langkey="navTitle">OpenAlex Explorer Dataviz</a>
+      </h5>
+    </div>
+
+    <!-- Right side: Navigation 
+    <div class="d-flex align-items-center">
+      <a class="btn btn-outline-primary me-3" href="/documentation">Documentation</a>
+    </div>-->
+  </div>
+
+  {% block container %}
+  {% endblock %}
+
+  <footer class="pt-2 my-md-5 pt-md-2 border-top">
+    <div class="row">
+      <div class="col-12 col-md">
+        <img class="mb-2" src="{{ url_for('static', filename= 'img/SmartBibl.IA_Solutions.png')}}" alt=""
+          width="120" height="50">
+        <small class="d-block mb-3 text-muted"><a href="mailto:grldn.geoffroy@gmail.com">Géraldine Geoffroy</a></small>
+      </div>
+      <div class="col-6 col-md">
+        <h5 data-langkey="footerColVisus">Code source</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="https://github.com/gegedenice/openalex-explorer" target="_blanck">Github</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md">
+        <h5 data-langkey="footerColRes">Ressources</h5>
+        <ul class="list-unstyled text-small">
+          <li><a class="text-muted" href="https://openalex.org/" target="_blanck">OpenAlex website</a></li>
+          <li><a class="text-muted" href="https://docs.openalex.org/how-to-use-the-api/api-overview" target="_blanck">OpenAlex API documentation</a></li>
+          <li><a class="text-muted" href="https://github.com/keshifme/keshif-plus" target="_blanck" data-langkey="footerApiDemo">Keshif-plus dataviz library</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row pull-right">
+      <small class="pull-right"><span data-langkey="footerCopDesign">Design inspiré de </span> <a
+          href="https://themes.3rdwavemedia.com/" target="_blank">Xiaoying Riley</a></small>
+    </div>
+  </footer>
+</body>
+
+</html>

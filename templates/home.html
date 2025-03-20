@@ -1,0 +1,157 @@
+{% extends "index.html" %}
+{% block container %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6 mb-3">
+      <div class="card mb-6 shadow-sm">
+        <div class="card-header text-center">
+          <h4 class="my-0 font-weight-normal">OpenAlex API URL</h4>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <div class="form-group">
+            <label for="openalexUrl">OpenAlex API url</label>
+            <input type="url" class="form-control" id="openalexUrl" placeholder="Enter your API request">
+            <small id="urlHelp" class="form-text text-muted">Examples
+              <ul>
+                <li>Small set (~ 50 records) :
+                  https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025,authorships.institutions.lineage:i35440088
+                </li>
+                <li>Medium set (~ 700 records) :
+                  https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025&sort=cited_by_count:desc
+                </li>
+              </ul>
+
+            </small>
+          </div>
+          <div class="form-group mt-3">
+            <label for="politeEmail">Email address (for polite tool)</label>
+            <input type="email" class="form-control" id="politeEmail">
+            <small id="emailHelp" class="form-text text-muted">See <a
+                href="https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication#the-polite-pool"
+                target="_blanck">documentation</a> for polite tool. grldn.geoffroy@gmail.com</small>
+          </div>
+          <div class="form-group mt-3">
+            <button type="submit" id="test_url" class="btn btn-outline-info btn-sm btn-group">Test API url before
+              harvesting</button>
+          </div>
+          <button type="submit" id="submit_url" class="btn btn-lg btn-block btn-primary mt-3">Explore</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 mb-3">
+      <div class="card mb-6 shadow-sm">
+        <div class="card-header  text-center">
+          <h4 class="my-0 font-weight-normal">Explanations</h4>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <p>
+            This application allows you to explore and analyze data from the OpenAlex API. By entering a valid API URL, you can retrieve some choosen metadata about OpenAlex works, including bibliographic metadata (identifiers, publication types, authors, institutions, topics...), OA informations or citations counts.
+          </p>
+          <p>
+            To get started, simply enter the desired API URL in the input field and click the "Test API url" button. The application will verify the URL's validity and fetch the relevant data. Don't forget to fill the email input with an email for the OpenAlex polite tool.
+          </p>
+          <p>
+            Once the data is successfully retrieved, it will be processed and displayed in an interactive dashboard. You can then explore the relationships between all variables.
+            </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="spinner" style="display:none;">
+    <span class="loader">Loading</span>
+  </div>
+  <button type="submit" class="btn btn-outline-danger btn-sm" onclick="window.location.reload()">Clear
+    dashboard</button>
+  <div class="contents">
+    <div id="kshfDashboard" style="height: 100vh; width: 100vw;"></div>
+  </div>
+</div>
+<script type="module">
+  /*------ Keshif explore-------*/
+  import * as kshf from "../static/dist/keshif.min.js";
+  import { keys } from "../static/js/keys-empty.js";
+  //window.onbeforeunload = function () { return "Exiting/reloading this page will clear this browser. Are you sure?"; };
+
+  kshf.Base.defaultBarHeight = 15;
+  var summaries = window["summaries"]
+  var recordDisplay = window["recordDisplay"]
+
+  function initializeDashboard(data) {
+    window.dashboard = new kshf.Browser({
+      barChartWidth: 100,
+      leftPanelLabelWidth: 160,
+      leftPanelLabelHeight: 200,
+      rightPanelLabelWidth: 160,
+      middlePanelLabelWidth: 160,
+      source: [
+        {
+          name: "OpenAlex",
+          id: "id",
+          load: function () {
+            // If a URL is provided, fetch the data
+            if (Array.isArray(data)) {
+              console.log(data)
+              // If data is provided directly, create records from it
+              data.forEach((d) => {
+                this.createRecord(d);
+              });
+            }
+          },
+        },
+      ],
+      "summaries": summaries,
+      "recordDisplay": recordDisplay
+    });
+  }
+
+  $(document).ready(function () {
+    // Handle API URL submission
+    $("#submit_url").on("click", function () {
+      const openalexUrl = $("#openalexUrl").val();
+      const politeEmail = $("#politeEmail").val();
+      if (openalexUrl) {
+        $("#spinner").show();
+        // New POST request to app.py
+        $.post("/process-data", { url: openalexUrl, email: politeEmail })
+          .done(function (data) {
+            // Assuming data is the JSON response from app.py
+            initializeDashboard(data);
+          })
+          .fail(function () {
+            alert("Error processing the request.");
+          })
+          .always(function () {
+            // Hide the spinner regardless of success or failure
+            $("#spinner").hide();
+          });
+      } else {
+        alert("Please enter a valid API URL.");
+      }
+    });
+
+    $("#test_url").on("click", function () {
+      const openalexUrl = $("#openalexUrl").val();
+      testUrlValidity(openalexUrl);
+    });
+
+    function testUrlValidity(url) {
+      fetch(url, { method: 'HEAD' }) // Use HEAD to get the response headers without the body
+        .then(response => {
+          // Log the HTTP status code
+          console.log("HTTP Status Code:", response.status);
+          if (response.ok) {
+            alert("The URL is valid. HTTP Status Code: " + response.status);
+          } else {
+            alert("The URL is not valid. HTTP Status Code: " + response.status);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching the URL:", error);
+          alert("An error occurred while testing the URL.");
+        });
+    }
+  });
+</script>
+{% endblock %}
