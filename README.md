@@ -2,7 +2,11 @@
 
 ## Overview
 
-The **OpenAlex Data Explorer** is a web application that allows users to explore and analyze data from the OpenAlex API. By entering a valid API URL, users can retrieve metadata about academic works, including bibliographic information, open access status, citation counts, and more. The application provides an interactive dashboard for visualizing relationships between various data points.
+The **OpenAlex Data Explorer** is a web application that allows users to explore and analyze data from OpenAlex in two ways:
+1. By entering a valid API URL to fetch data directly from the OpenAlex API
+2. By uploading a CSV file containing previously downloaded OpenAlex data
+
+Users can access metadata about academic works, including bibliographic information, open access status, citation counts, and more. The application provides an interactive dashboard for visualizing relationships between various data points.
 
 ## Screenshot
 
@@ -10,10 +14,12 @@ The **OpenAlex Data Explorer** is a web application that allows users to explore
 
 ## Features
 
-- **API URL Input**: Enter a valid OpenAlex API URL to fetch data.
-- **Data Validation**: Test the validity of the provided API URL before harvesting data.
-- **Interactive Dashboard**: Visualize and explore relationships between authors, institutions, and works.
-- **Polite Tool Compliance**: Use an email address for polite API requests to comply with OpenAlex's usage policies.
+- **Dual Data Input**:
+  - **API URL Input**: Enter a valid OpenAlex API URL to fetch data directly
+  - **CSV Upload**: Upload previously downloaded OpenAlex data in CSV format
+- **Data Validation**: Test the validity of the provided API URL before harvesting data
+- **Interactive Dashboard**: Visualize and explore relationships between authors, institutions, and works
+- **Polite Tool Compliance**: Use an email address for polite API requests to comply with OpenAlex's usage policies
 
 ## Python Installation
 
@@ -21,7 +27,7 @@ To set up the OpenAlex Data Explorer locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/openalex-data-explorer.git
+   git clone https://github.com/gegedenice/openalex-data-explorer.git
    cd openalex-data-explorer
    ```
 
@@ -45,7 +51,7 @@ To set up the OpenAlex Data Explorer locally, follow these steps:
 
 ## Docker installation
 
- ```bash
+```bash
 git clone https://github.com/yourusername/openalex-data-explorer.git
 cd openalex-data-explorer
 ```
@@ -54,13 +60,6 @@ cd openalex-data-explorer
 docker build -t openalex-explorer:latest .
 docker run -d --name openalex-explorer -p 5000:5000 -v $(pwd):/app openalex-explorer:latest
 ```
-
-## Usage
-
-1. **Enter API URL**: In the "OpenAlex API URL" field, input a valid OpenAlex API request URL.
-2. **Email Address**: Provide an email address in the "Email address" field for polite tool compliance.
-3. **Test URL**: Click the "Test API url" button to verify the validity of the URL.
-4. **Explore Data**: After testing, click the "Explore" button to fetch and visualize the data in the dashboard.
 
 ## Example API URLs
 

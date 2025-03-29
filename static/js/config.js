@@ -21,6 +21,22 @@ var summaries = [
         }
     },
     {
+        "name": "Publication type",
+        "panel": "left",
+        "value": "type"
+    },
+    /*{
+        "name": "Language",
+        "panel": "left",
+        "value": "language",
+        "collapsed": true 
+    },
+    {
+        "name": "Journal",
+        "panel": "left",
+        "value": "primary_location_display_name"
+    },*/
+    {
         "name": "Publisher",
         "panel": "left",
         "value": "primary_location_host_organization_name"
@@ -56,22 +72,28 @@ var summaries = [
         }
         
     },
+    /*{
+        "name": "keywords",
+        "panel": "left",
+        "value":  function () {
+            if(this["keywords_display_name"]){
+              return this["keywords_display_name"].split("|")
+            }
+        }
+        
+    },*/
     {
-        "name": "Language",
+        "name": "Sustainable goals",
         "panel": "left",
-        "value": "language",
-        "collapsed": true 
+        //"value": "authorships_author_display_name",
+        "value":  function () {
+            if(this["sustainable_development_goals_display_name"]){
+             return this["sustainable_development_goals_display_name"].split("|")
+            }
+        }
     },
-    {
-        "name": "Publication type",
-        "panel": "left",
-        "value": "type"
-    },
-   /* {
-        "name": "Journal",
-        "panel": "left",
-        "value": "primary_location_display_name"
-    },
+    
+   /*
     {
         "name": "Publication year",
         "panel": "left",
