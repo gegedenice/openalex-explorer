@@ -8,33 +8,64 @@
           <h4 class="my-0 font-weight-normal">OpenAlex API URL</h4>
         </div>
         <div class="card-body d-flex flex-column">
-          <div class="form-group">
-            <label for="openalexUrl">OpenAlex API url</label>
-            <input type="url" class="form-control" id="openalexUrl" placeholder="Enter your API request">
-            <small id="urlHelp" class="form-text text-muted">Examples
-              <ul>
-                <li>Small set (~ 50 records) :
-                  https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025,authorships.institutions.lineage:i35440088
-                </li>
-                <li>Medium set (~ 700 records) :
-                  https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025&sort=cited_by_count:desc
-                </li>
-              </ul>
 
-            </small>
+          <!-- Add tabs for switching between API and CSV upload -->
+          <ul class="nav nav-tabs mb-3" id="dataTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="api-tab" data-bs-toggle="tab" data-bs-target="#api-content"
+                type="button" role="tab">
+                API URL
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="csv-tab" data-bs-toggle="tab" data-bs-target="#csv-content" type="button"
+                role="tab">
+                CSV Upload
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="dataTabsContent">
+            <!-- API URL Tab -->
+            <div class="tab-pane fade show active" id="api-content" role="tabpanel">
+              <div class="form-group">
+                <label for="openalexUrl">OpenAlex API url</label>
+                <input type="url" class="form-control" id="openalexUrl" placeholder="Enter your API request">
+                <small id="urlHelp" class="form-text text-muted">Examples
+                  <ul>
+                    <li>Small set (~ 50 records) :
+                      https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025,authorships.institutions.lineage:i35440088
+                    </li>
+                    <li>Medium set (~ 700 records) :
+                      https://api.openalex.org/works?filter=authorships.institutions.lineage:i5124864,publication_year:2025&sort=cited_by_count:desc
+                    </li>
+                  </ul>
+                </small>
+              </div>
+              <div class="form-group mt-3">
+                <label for="politeEmail">Email address (for polite tool)</label>
+                <input type="email" class="form-control" id="politeEmail">
+                <small id="emailHelp" class="form-text text-muted">See <a
+                    href="https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication#the-polite-pool"
+                    target="_blanck">documentation</a> for polite tool. grldn.geoffroy@gmail.com</small>
+              </div>
+              <div class="form-group mt-3">
+                <button type="submit" id="test_url" class="btn btn-outline-info btn-sm btn-group">Test API url before
+                  harvesting</button>
+              </div>
+            </div>
+            
+              <!-- CSV Upload Tab -->
+              <div class="tab-pane fade" id="csv-content" role="tabpanel">
+                <div class="form-group">
+                  <label for="csvFile">Upload CSV File</label>
+                  <input type="file" class="form-control" id="csvFile" accept=".csv">
+                  <small class="form-text text-muted">Please upload a CSV file with OpenAlex data</small>
+                </div>
+              </div>
           </div>
-          <div class="form-group mt-3">
-            <label for="politeEmail">Email address (for polite tool)</label>
-            <input type="email" class="form-control" id="politeEmail">
-            <small id="emailHelp" class="form-text text-muted">See <a
-                href="https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication#the-polite-pool"
-                target="_blanck">documentation</a> for polite tool.</small>
-          </div>
-          <div class="form-group mt-3">
-            <button type="submit" id="test_url" class="btn btn-outline-info btn-sm btn-group">Test API url before
-              harvesting</button>
-          </div>
-          <button type="submit" id="submit_url" class="btn btn-lg btn-block btn-primary mt-3">Explore</button>
+
+          <button type="submit" id="submit_data" class="btn btn-lg btn-block btn-primary mt-3">Explore</button>
         </div>
       </div>
     </div>
@@ -46,25 +77,39 @@
         </div>
         <div class="card-body d-flex flex-column">
           <p>
-            This application allows you to explore and analyze data from the OpenAlex API. By entering a valid API URL, you can retrieve some choosen metadata about OpenAlex works, including bibliographic metadata (identifiers, publication types, authors, institutions, topics...), OA informations or citations counts.
+            This application allows you to explore and analyze data from OpenAlex in two ways:
+            1) By entering a valid API URL to fetch data directly from OpenAlex API
+            2) By uploading a CSV file containing previously downloaded OpenAlex data.
+            
+            Both methods will give you access to rich metadata about OpenAlex works, including bibliographic metadata (identifiers,
+            publication types, authors, institutions, topics...), OA information, and citation counts.
           </p>
           <p>
-            To get started, simply enter the desired API URL in the input field and click the "Test API url" button. The application will verify the URL's validity and fetch the relevant data. Don't forget to fill the email input with an email for the OpenAlex polite tool.
+            To get started with the API method, enter the desired API URL in the input field and click the "Test API url" button. The
+            application will verify the URL's validity and fetch the relevant data. Don't forget to fill the email input
+            with an email for the OpenAlex polite tool.
           </p>
           <p>
-            Once the data is successfully retrieved, it will be processed and displayed in an interactive dashboard. You can then explore the relationships between all variables.
-            </p>
+            Alternatively, if you already have OpenAlex data in CSV format downloaded from the OpenAlex website, simply switch to the CSV tab and upload your file. The CSV
+            should contain the standard OpenAlex work metadata fields. This method is particularly useful for working with larger datasets
+            that you've previously downloaded or processed.
+          </p>
+          <p>
+            Once the data is successfully retrieved (either through API or CSV), it will be processed and displayed in an interactive dashboard.
+            You can then explore the relationships between all variables through various visualizations and filters.
+          </p>
         </div>
       </div>
     </div>
   </div>
 
   <div id="spinner" style="display:none;">
-    <span class="loader">Loading</span>
+    <span class="loader"></span>
   </div>
   <button type="submit" class="btn btn-outline-danger btn-sm" onclick="window.location.reload()">Clear
     dashboard</button>
   <div class="contents">
+    <!--<div id="kshfDashboard" style="height: 100vh; width: 100vw;"></div>-->
     <div id="kshfDashboard" style="height: 100%; width: 100%;"></div>
   </div>
 </div>
@@ -108,27 +153,48 @@
 
   $(document).ready(function () {
     // Handle API URL submission
-    $("#submit_url").on("click", function () {
-      const openalexUrl = $("#openalexUrl").val();
-      const politeEmail = $("#politeEmail").val();
-      if (openalexUrl) {
+    $("#submit_data").on("click", function () {
+      const activeTab = $("#dataTabs .nav-link.active").attr('id');
+      const formData = new FormData();
+      if (activeTab === 'api-tab') {
+        const openalexUrl = $("#openalexUrl").val();
+        const politeEmail = $("#politeEmail").val();
+        if (!openalexUrl) {
+          alert("Please enter a valid API URL.");
+          return;
+        }
+        formData.append('url', openalexUrl);
+        formData.append('email', politeEmail);
+        formData.append('source_type', 'api');
+      } else {
+        const fileInput = $("#csvFile")[0];
+        if (!fileInput.files[0]) {
+          alert("Please select a CSV file.");
+          return;
+        }
+        formData.append('file', fileInput.files[0]);
+        formData.append('source_type', 'csv');
+      }
+     
         $("#spinner").show();
         // New POST request to app.py
-        $.post("/process-data", { url: openalexUrl, email: politeEmail })
-          .done(function (data) {
-            // Assuming data is the JSON response from app.py
-            initializeDashboard(data);
-          })
-          .fail(function () {
-            alert("Error processing the request.");
-          })
-          .always(function () {
-            // Hide the spinner regardless of success or failure
-            $("#spinner").hide();
-          });
-      } else {
-        alert("Please enter a valid API URL.");
-      }
+        $.ajax({
+            url: '/process-data',
+            type: 'POST',
+            data: formData,
+            processData: false,  // Tell jQuery not to process the data
+            contentType: false,  // Tell jQuery not to set contentType
+            success: function(data) {
+                initializeDashboard(data);
+            },
+            error: function() {
+                alert("Error processing the request.");
+            },
+            complete: function() {
+                $("#spinner").hide();
+            }
+        });
+
     });
 
     $("#test_url").on("click", function () {
