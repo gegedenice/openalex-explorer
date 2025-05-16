@@ -11,6 +11,15 @@ var summaries = [
         "value": "open_access_oa_status"
     },
     {
+        "name": "grants funders",
+        "panel": "middle",
+        "value":  function () {
+            if(this["grants_funder_display_name"]){
+             return this["grants_funder_display_name"].split("|")
+            }
+        }
+    },
+    {
         "name": "Publication date",
         "panel": "bottom",
         //"value": "publication_date",
@@ -23,7 +32,8 @@ var summaries = [
     {
         "name": "Publication type",
         "panel": "left",
-        "value": "type"
+        "value": "type", 
+        "collapsed": true 
     },
     /*{
         "name": "Language",
@@ -63,11 +73,12 @@ var summaries = [
         
     },
     {
-        "name": "Topics",
+        "name": "Countries",
         "panel": "left",
+        //"value": "authorships_institutions_display_name",
         "value":  function () {
-            if(this["topics_display_name"]){
-              return this["topics_display_name"].split("|")
+            if(this["countries_code"]){
+              return this["countries_code"].split("|")
             }
         }
         
@@ -81,17 +92,7 @@ var summaries = [
             }
         }
         
-    },*/
-    {
-        "name": "Sustainable goals",
-        "panel": "left",
-        //"value": "authorships_author_display_name",
-        "value":  function () {
-            if(this["sustainable_development_goals_display_name"]){
-             return this["sustainable_development_goals_display_name"].split("|")
-            }
-        }
-    },
+    },*/   
     
    /*
     {
@@ -106,12 +107,12 @@ var summaries = [
         "panel": "right",
         "value": "apc_paid"
     },
-    {
+   /*{
         "name": "Cites",
         "panel": "right",
         "value": "referenced_works_count",
         "collapsed": true 
-    },
+    },*/
     {
         "name": "Cited by",
         "panel": "right",
@@ -119,6 +120,27 @@ var summaries = [
         "collapsed": true
     },
     {
+        "name": "Topics",
+        "panel": "right",
+        "value":  function () {
+            if(this["topics_display_name"]){
+              return this["topics_display_name"].split("|")
+            }
+        }
+        
+    },
+    {
+        "name": "Sustainable goals",
+        "panel": "right",
+        //"value": "authorships_author_display_name",
+        "value":  function () {
+            if(this["sustainable_development_goals_display_name"]){
+             return this["sustainable_development_goals_display_name"].split("|")
+            }
+        }
+    },
+    
+   /* {
         "name": "Distinct countries count",
         "panel": "right",
         "value": "countries_distinct_count",
@@ -135,12 +157,12 @@ var summaries = [
         "panel": "right",
         "value": "locations_count",
         "collapsed": true
-    },
+    },*/
    /* {
         "name": "FWCI",
         "panel": "right",
         "value": "fwci"
-    },*/
+    },
     {
         "name": "Is in Top 1 percent",
         "panel": "right",
@@ -152,7 +174,7 @@ var summaries = [
         "panel": "right",
         "value": "percentiles_is_in_top_10_percent",
         "collapsed": true
-    },
+    },*/
     {
         name: "Record Text",
         value: function (_rec) {

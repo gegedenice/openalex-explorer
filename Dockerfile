@@ -6,6 +6,6 @@ WORKDIR /app
 COPY . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-#VOLUME ["/app"]
+VOLUME ["/app/files"]
 EXPOSE 5000
 CMD [ "gunicorn", "--bind=0.0.0.0:5000", "--timeout=0", "wsgi:app"]

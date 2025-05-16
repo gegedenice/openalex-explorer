@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from client import OpenAlexHarvester
 import pandas as pd
 import os
+import json
 
 
 app = Flask(__name__)
@@ -18,11 +19,40 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/list-files')
+def list_files():
+    files_dir = os.path.join(app.root_path, 'files')
+    files = [f for f in os.listdir(files_dir) if f.endswith('.json')]
+    return jsonify(files)
+
+@app.route('/load-file/<filename>')
+def load_file(filename):
+    file_path = os.path.join(app.root_path, 'files', f"{filename}.json")
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as f:
+            return jsonify(json.load(f))
+    return jsonify({'error': 'File not found'}), 404
+
+@app.route('/delete-file/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    try:
+        file_path = os.path.join(app.root_path, 'files', filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return jsonify({'success': True}), 200
+        return jsonify({'error': 'File not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
 @app.route('/process-data', methods=['GET', 'POST'])
 def process_data():
     if request.method == 'POST':
         source_type = request.form.get('source_type')
+        filename = request.form.get('filename')
+        if not filename.endswith('.json'):
+            filename += '.json'
         try:
             if source_type == 'api':
                 # Get the URL from the POST request
@@ -30,7 +60,7 @@ def process_data():
                 email = request.form.get('email')
                 # Perform your internal data processing here
                 harvester = OpenAlexHarvester(api_url=url,email=email)
-                metadata_list = harvester.harvest_metadata(per_page=50)
+                processed_data = harvester.harvest_metadata(per_page=50)
             elif source_type == 'csv':
                 if 'file' not in request.files:
                     return jsonify({'error': 'No file provided'}), 400
@@ -44,15 +74,18 @@ def process_data():
 
                 try:
                     harvester = OpenAlexHarvester(csv_filepath=filepath)
-                    metadata_list = harvester.process_csv_data()
+                    processed_data = harvester.process_csv_data()
                     # Clean up the uploaded file
                     #os.remove(filepath)
                 except Exception as e:
                     return jsonify({'error': str(e)}), 500
             else:
                 return jsonify({'error': 'Invalid source type'}), 400
-
-            return jsonify(metadata_list)
+            # Save the processed data to a JSON file
+            new_file_path = os.path.join(app.root_path, 'files', filename)
+            with open(new_file_path, 'w') as f:
+                json.dump(processed_data, f)
+            return jsonify(processed_data), 200
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500

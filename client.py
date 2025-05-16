@@ -6,42 +6,6 @@ from collections import defaultdict
 import ast, os, re, json
 from datetime import datetime
 
-columns_mapping_dict = {
-  'id': 'id',
-  'doi': 'ids.doi',
-  'pmid': 'ids.pmid',
-  'mag': 'ids.mag',
-  'title': 'title',
-  'publication_year': 'publication_year',
-  'language': 'language',
-  'type': 'type',
-  'apc_paid': 'apc_paid',
-  'referenced_works_count': 'referenced_works_count',
-  'cited_by_count': 'cited_by_count',
-  'countries_distinct_count': 'countries_distinct_count',
-  'institutions_distinct_count': 'institutions_distinct_count',
-  'locations_count': 'locations_count',
-  'fwci': 'fwci',
-  'primary_location_display_name': 'primary_location.source.display_name',
-  'primary_location_host_organization_name': 'primary_location.source.host_organization_name',
-  'publication_date': 'publication_date',
-  'percentiles_value': 'citation_normalized_percentile.value',
-  'percentiles_is_in_top_1_percent': 'citation_normalized_percentile.is_in_top_1_percent',
-  'percentiles_is_in_top_10_percent': 'citation_normalized_percentile.is_in_top_10_percent',
-  'open_access_is_oa': 'open_access.is_oa',
-  'open_access_oa_status': 'open_access.oa_status',
-  'grants_funder_display_name': 'grants.funder_display_name',
-  'countries_codes': 'institution_assertions.country_code',
-  'authorships_author_display_name': 'authorships.author.display_name',
-  'authorships_institutions_display_name': 'authorships.institutions',
-  'topics_display_name': 'topics.display_name',
-  'topics_subfield_display_name': 'topics.subfield.display_name',
-  'topics_field_display_name': 'topics.field.display_name',
-  'topics_domain_display_name': 'topics.domain.display_name',
-  'sustainable_development_goals_display_name': 'sustainable_development_goals.display_name',
-  'keywords_display_name': 'keywords.display_name'
-}
-
 class JSONMetadataParser:
     def __init__(self, email):
         self.email = email
@@ -114,12 +78,6 @@ class JSONMetadataParser:
             parsed_data["pmid"] = json_obj.get("ids", {}).get("pmid", "")
         except Exception as e:
             print(f"Error parsing pmid: {e}")
-
-        try:
-            print("Parsing mag...")
-            parsed_data["mag"] = json_obj.get("ids", {}).get("mag", "")
-        except Exception as e:
-            print(f"Error parsing mag: {e}")
 
         try:
             print("Parsing title...")
@@ -246,6 +204,11 @@ class JSONMetadataParser:
                   if path not in display_names:
                       display_names[path] = []
                   display_names[path].append(value)
+                  
+            # After collecting all values, limit to first 10 if needed (preventing massive authorships)
+            for path in display_names:
+                if len(display_names[path]) > 10:
+                    display_names[path] = display_names[path][:10]
 
             for path, values in display_names.items():
               parsed_data[path.replace(".","_")] = "|".join(values)
@@ -269,12 +232,46 @@ class JSONMetadataParser:
             return None
 
 class OpenAlexHarvester:
+    COLUMNS_MAPPING = {
+        'id': 'id',
+        'doi': 'ids.doi',
+        'pmid': 'ids.pmid',
+        'mag': 'ids.mag',
+        'title': 'title',
+        'publication_year': 'publication_year',
+        'language': 'language',
+        'type': 'type',
+        'apc_paid': 'apc_paid.value_usd',
+        'referenced_works_count': 'referenced_works_count',
+        'cited_by_count': 'cited_by_count',
+        'countries_distinct_count': 'countries_distinct_count',
+        'institutions_distinct_count': 'institutions_distinct_count',
+        'locations_count': 'locations_count',
+        'fwci': 'fwci',
+        'primary_location_display_name': 'primary_location.source.display_name',
+        'primary_location_host_organization_name': 'primary_location.source.host_organization_name',
+        'publication_date': 'publication_date',
+        'percentiles_value': 'citation_normalized_percentile.value',
+        'percentiles_is_in_top_1_percent': 'citation_normalized_percentile.is_in_top_1_percent',
+        'percentiles_is_in_top_10_percent': 'citation_normalized_percentile.is_in_top_10_percent',
+        'open_access_is_oa': 'open_access.is_oa',
+        'open_access_oa_status': 'open_access.oa_status',
+        'grants_funder_display_name': 'grants.funder_display_name',
+        'countries_codes': 'institution_assertions.country_code',
+        'authorships_author_display_name': 'authorships.author.display_name',
+        'authorships_institutions_display_name': 'authorships.institutions',
+        'topics_display_name': 'topics.display_name',
+        'topics_subfield_display_name': 'topics.subfield.display_name',
+        'topics_field_display_name': 'topics.field.display_name',
+        'topics_domain_display_name': 'topics.domain.display_name',
+        'sustainable_development_goals_display_name': 'sustainable_development_goals.display_name',
+        'keywords_display_name': 'keywords.display_name'
+    }
     def __init__(self, email=None, api_url=None, csv_filepath=None):
         self.email = email
         self.api_url = self.remove_page_params(api_url) if api_url else None
         self.csv_filepath = csv_filepath
         self.parser = JSONMetadataParser(email)
-        self.columns_mapping_dict = columns_mapping_dict
         self.csv_data = pd.read_csv(self.csv_filepath, encoding="utf-8") if csv_filepath else None
 
     def _map_df_columns(self, df):
@@ -290,7 +287,7 @@ class OpenAlexHarvester:
       """
 
       new_columns = {}
-      for key, value in self.columns_mapping_dict.items():
+      for key, value in self.COLUMNS_MAPPING.items():
           if value in df.columns:
               new_columns[value] = key
 

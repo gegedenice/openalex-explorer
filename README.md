@@ -18,8 +18,9 @@ Users can access metadata about academic works, including bibliographic informat
   - **API URL Input**: Enter a valid OpenAlex API URL to fetch data directly
   - **CSV Upload**: Upload previously downloaded OpenAlex data in CSV format
 - **Data Validation**: Test the validity of the provided API URL before harvesting data
+- **Dataset saving and sharable urls**: Save the processed data locally by providing a filename (in the "Save as" form's field) and access your saved datasets and your visualization later
 - **Interactive Dashboard**: Visualize and explore relationships between authors, institutions, and works
-- **Polite Tool Compliance**: Use an email address for polite API requests to comply with OpenAlex's usage policies
+- **Polite pool Compliance**: Use an email address for polite API requests to comply with OpenAlex's usage policies
 
 ## Python Installation
 

@@ -1463,11 +1463,6 @@ select {
   }
 }
 
-/*------ custom -------*/
-#heplUrl {
-  font-size: .875em;
-}
-
 /*---- spinner -----*/
 #spinner {
   display: flex; /* Use flexbox for alignment */
