@@ -77,11 +77,11 @@ var summaries = [
         "panel": "left",
         //"value": "authorships_institutions_display_name",
         "value":  function () {
-            if(this["countries_code"]){
-              return this["countries_code"].split("|")
+            if(this["countries_codes"]){
+              return this["countries_codes"].split("|")
             }
-        }
-        
+        },
+        "collapsed": true 
     },
     /*{
         "name": "keywords",
